@@ -1,10 +1,10 @@
 <?php
 
-$plugin['version'] = '0.1';
-$plugin['author'] = 'Jon-Michael Deldin';
-$plugin['author_uri'] = 'http://jmdeldin.com/';
-$plugin['description'] = 'Pipes neighboring articles into an article form.';
-$plugin['type'] = 0;
+$plugin = array(
+    'description' = 'Pipes neighboring articles into an article form.',
+    'type' => 0,
+    'version' => '0.1',
+);
 
 if (!defined('txpinterface')) @include_once '../zem_tpl.php';
 
