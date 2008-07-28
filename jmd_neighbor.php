@@ -38,8 +38,8 @@ h3. Link the article images of next and previous articles
 Form: default
 
 bc. <ul>
-    <txp:jmd_neighbor type="prev"/>
-    <txp:jmd_neighbor type="next"/>
+    <txp:jmd_neighbor form="neighbor" type="prev"/>
+    <txp:jmd_neighbor form="neighbor" type="next"/>
 </ul>
 
 Form: neighbor
@@ -66,8 +66,6 @@ bc. <txp:jmd_if_neighbor>
     Nope, you're in Montana.
 </txp:jmd_if_neighbor>
 
-fn1. If you need PHP4 compatibility, replace @public $type;@ with @var $type;@ and remove @public@ from the next line.
-
 # --- END PLUGIN HELP ---
 
 <?php
@@ -75,17 +73,21 @@ fn1. If you need PHP4 compatibility, replace @public $type;@ with @var $type;@ a
 
 # --- BEGIN PLUGIN CODE ---
 
-// pipe an article's neighbor into a form
+/**
+ * Pipe an article's neighbor into a form.
+ * 
+ * @param array $atts
+ * @param string $atts['form']
+ * @param string $atts['type'] Valid: "prev" or "next"
+ */
 function jmd_neighbor($atts)
 {
+    global $thisarticle, $next_id, $prev_id, $jmd_neighbor;
     extract(lAtts(array(
-        'form' => 'neighbor',
+        'form' => '',
         'type' => '',
     ), $atts));
-
     assert_article();
-    global $thisarticle, $next_id, $prev_id, $jmd_neighbor;
-    $jmd_neighbor= new JMD_Neighbor;
 
     if ($type == ('next' || 'prev'))
     {
@@ -97,9 +99,9 @@ function jmd_neighbor($atts)
         {
             $id = $prev_id;
         }
-
         if (isset($id))
         {
+            $jmd_neighbor = new JMD_Neighbor();
             return $jmd_neighbor->article($id, $form, $type);
         }
     }
@@ -109,13 +111,17 @@ function jmd_neighbor($atts)
     }
 }
 
-// checks for neighbors
+/**
+ * Checks for neighbors.
+ * 
+ * @param array $atts
+ * @param string $atts['type'] Type of neighbor to check for ('next'||'prev')
+ */
 function jmd_if_neighbor($atts, $thing)
 {
     extract(lAtts(array(
         'type' => '',
     ), $atts));
-
     $condition = ($GLOBALS['jmd_neighbor']->type == $type);
     $out = EvalElse($thing, $condition);
 
@@ -127,6 +133,13 @@ class JMD_Neighbor
 {
     public $type;
 
+    /**
+     * Creates an article_custom from a given id.
+     * 
+     * @param int $id Article ID
+     * @param string $form Form name
+     * @param string $type "next" or "prev"
+     */
     public function article($id, $form, $type)
     {
         $this->type = $type;
