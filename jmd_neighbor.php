@@ -1,7 +1,7 @@
 <?php
 
 $plugin = array(
-    'description' = 'Pipes neighboring articles into an article form.',
+    'description' => 'Pipes neighboring articles into an article form.',
     'type' => 0,
     'version' => '0.1',
 );
@@ -38,22 +38,22 @@ h3. Link the article images of next and previous articles
 Form: default
 
 bc. <ul>
-	<txp:jmd_neighbor type="prev"/>
-	<txp:jmd_neighbor type="next"/>
+    <txp:jmd_neighbor type="prev"/>
+    <txp:jmd_neighbor type="next"/>
 </ul>
 
 Form: neighbor
 
 bc.. <li>
-	<txp:jmd_if_neighbor type="next">
-		Next:
-	<txp:else/>
-		Prev:
-	</txp:jmd_if_neighbor>
+    <txp:jmd_if_neighbor type="next">
+        Next:
+    <txp:else/>
+        Prev:
+    </txp:jmd_if_neighbor>
 
-	<txp:permlink>
-		<txp:title/><txp:article_image thumbnail="1"/>
-	</txp:permlink>
+    <txp:permlink>
+        <txp:title/><txp:article_image thumbnail="1"/>
+    </txp:permlink>
 </li>
 
 h3. Check for neighbors
@@ -61,9 +61,9 @@ h3. Check for neighbors
 Form: neighbor
 
 bc. <txp:jmd_if_neighbor>
-	Yes, there are neighbors.
+    Yes, there are neighbors.
 <txp:else/>
-	Nope, you're in Montana.
+    Nope, you're in Montana.
 </txp:jmd_if_neighbor>
 
 fn1. If you need PHP4 compatibility, replace @public $type;@ with @var $type;@ and remove @public@ from the next line.
@@ -78,66 +78,66 @@ fn1. If you need PHP4 compatibility, replace @public $type;@ with @var $type;@ a
 // pipe an article's neighbor into a form
 function jmd_neighbor($atts)
 {
-	extract(lAtts(array(
-		'form' => 'neighbor',
-		'type' => '',
-	), $atts));
+    extract(lAtts(array(
+        'form' => 'neighbor',
+        'type' => '',
+    ), $atts));
 
-	assert_article();
-	global $thisarticle, $next_id, $prev_id, $jmd_neighbor;
-	$jmd_neighbor= new JMD_Neighbor;
+    assert_article();
+    global $thisarticle, $next_id, $prev_id, $jmd_neighbor;
+    $jmd_neighbor= new JMD_Neighbor;
 
-	if ($type == ('next' || 'prev'))
-	{
-		if (($type == 'next') && ($next_id))
-		{
-			$id = $next_id;
-		}
-		if (($type == 'prev') && ($prev_id))
-		{
-			$id = $prev_id;
-		}
+    if ($type == ('next' || 'prev'))
+    {
+        if (($type == 'next') && ($next_id))
+        {
+            $id = $next_id;
+        }
+        if (($type == 'prev') && ($prev_id))
+        {
+            $id = $prev_id;
+        }
 
-		if (isset($id))
-		{
-			return $jmd_neighbor->article($id, $form, $type);
-		}
-	}
-	else
-	{
-		trigger_error('No type was set');
-	}
+        if (isset($id))
+        {
+            return $jmd_neighbor->article($id, $form, $type);
+        }
+    }
+    else
+    {
+        trigger_error('No type was set');
+    }
 }
 
 // checks for neighbors
 function jmd_if_neighbor($atts, $thing)
 {
-	extract(lAtts(array(
-		'type' => '',
-	), $atts));
+    extract(lAtts(array(
+        'type' => '',
+    ), $atts));
 
-	$condition = ($GLOBALS['jmd_neighbor']->type == $type);
-	$out = EvalElse($thing, $condition);
+    $condition = ($GLOBALS['jmd_neighbor']->type == $type);
+    $out = EvalElse($thing, $condition);
 
-	return parse($out);
+    return parse($out);
 }
 
 
 class JMD_Neighbor
 {
-	public $type;
+    public $type;
 
-	public function article($id, $form, $type)
-	{
-		$this->type = $type;
-		$out = article_custom(array(
-			'form' => $form,
-			'id' => $id,
-		));
+    public function article($id, $form, $type)
+    {
+        $this->type = $type;
+        $out = article_custom(array(
+            'form' => $form,
+            'id' => $id,
+        ));
 
-		return $out;
-	}
-	
+        return $out;
+    }
+    
 }
 
 # --- END PLUGIN CODE ---
